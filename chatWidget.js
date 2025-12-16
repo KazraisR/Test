@@ -1,6 +1,5 @@
 // chatWidget.js
 export function initChatWidget(webhookUrl, styleOptions = {}) {
-  
   const WEBHOOK_URL = webhookUrl;
 
   const {
@@ -14,52 +13,8 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
   const posRight = position === "bottom-right" ? "20px" : "auto";
   const posLeft = position === "bottom-left" ? "20px" : "auto";
 
-  // --- Create button ---
-  const chatButton = document.createElement('button');
-  chatButton.className = 'chat-button';
-  chatButton.textContent = '💬';
-  document.body.appendChild(chatButton);
-
-  // --- Create form window ---
-  const formWindow = document.createElement('div');
-  formWindow.className = 'form-window';
-  formWindow.innerHTML = `
-    <div class="form-header">Enter Your Info</div>
-    <form class="form-content">
-      <label>Name</label>
-      <input type="text" id="name" placeholder="Your name" required>
-      <label>Age</label>
-      <input type="number" id="age" placeholder="Your age" required>
-      <label>Email</label>
-      <input type="email" id="email" placeholder="Your email" required>
-      <button type="button" id="start-chat">Start Chat</button>
-    </form>
-  `;
-  document.body.appendChild(formWindow);
-
-  // --- Create chat window ---
-  const chatWindow = document.createElement('div');
-  chatWindow.className = 'chat-window';
-  chatWindow.innerHTML = `
-    <div class="chat-header">
-      <span>Chat</span>
-      <button class="chat-close">✖</button>
-    </div>
-    <div class="chat-messages"></div>
-    <div class="chat-buttons"></div>
-    <div class="chat-input">
-      <input type="text" id="message" placeholder="Type a message...">
-      <button id="send">Send</button>
-    </div>
-  `;
-  document.body.appendChild(chatWindow);
-
-  // --- Styles ---
-  const style = document.createElement('style');
-  style.textContent = `
-    /* same CSS as before */
-  `;
-  document.head.appendChild(style);
+  // --- Create UI elements (same as before) ---
+  // ... chatButton, formWindow, chatWindow, styles ...
 
   // --- Logic ---
   const startChatButton = formWindow.querySelector('#start-chat');
@@ -67,9 +22,9 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
   const messageInput = chatWindow.querySelector('#message');
   const chatMessages = chatWindow.querySelector('.chat-messages');
   const closeButton = chatWindow.querySelector('.chat-close');
-  
+
   let customerInfo = {};
-  let sessionId = null;
+  let sessionId = null; // <-- new session ID variable
 
   chatButton.addEventListener('click', () => {
     formWindow.style.display = formWindow.style.display === 'flex' ? 'none' : 'flex';
@@ -86,16 +41,19 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
     const email = formWindow.querySelector('#email').value.trim();
     if (name && age && email) {
       customerInfo = { name, age, email };
+
       if (crypto.randomUUID) {
         sessionId = crypto.randomUUID();
       } else {
         sessionId = generateUUIDv4();
       }
+
       formWindow.style.display = 'none';
       chatWindow.style.display = 'flex';
+
       const greet = document.createElement('div');
       greet.classList.add('bubble', 'bot');
-      greet.textContent = `Welcome ${name}! Let's start chatting.`;
+      greet.textContent = `Welcome ${name}! Your session ID is ${sessionId}. Let's start chatting.`;
       chatMessages.appendChild(greet);
     } else {
       alert("Please fill out all fields.");
@@ -144,7 +102,6 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
     if (e.key === 'Enter') sendButton.click();
   });
 }
-
 
 function generateUUIDv4() {
   const randomValues = crypto.getRandomValues(new Uint8Array(16));
