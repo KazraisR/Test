@@ -156,8 +156,8 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
 
     if (data.error) {
       botMsg.textContent = "(error connecting to chatbot)";
-    } else if (data.reply) {
-      botMsg.textContent = data.reply;
+    } else if (data.question) {
+      botMsg.textContent = data.question;
     } else if (data.raw) {
       botMsg.textContent = data.raw;
     } else {
@@ -228,5 +228,6 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
