@@ -103,7 +103,6 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
     .chat-input input { flex:1; border:none; padding:10px; }
     .chat-input button { background:${primaryColor}; color:white; border:none; padding:10px 15px; cursor:pointer; }
   `;
-
   document.head.appendChild(style);
 
   // --- Logic ---
@@ -125,10 +124,56 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
     chatWindow.style.display = "none";
   });
 
-  startChatButton.addEventListener("click", () => {
+  // --- Backend helper (no UI side effects) ---
+  async function sendToBackend(payload) {
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      try {
+        return await res.json();
+      } catch {
+        return { raw: await res.text() };
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      return { error: true };
+    }
+  }
+
+  // --- UI wrapper ---
+  async function sendMessageToWebhook(text) {
+    const data = await sendToBackend({
+      customer: customerInfo,
+      sessionId: sessionId,
+      message: text
+    });
+
+    const botMsg = document.createElement("div");
+    botMsg.classList.add("bubble", "bot");
+
+    if (data.error) {
+      botMsg.textContent = "(error connecting to chatbot)";
+    } else if (data.reply) {
+      botMsg.textContent = data.reply;
+    } else if (data.raw) {
+      botMsg.textContent = data.raw;
+    } else {
+      botMsg.textContent = "No response";
+    }
+
+    chatMessages.appendChild(botMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // --- Start Chat handler ---
+  startChatButton.addEventListener("click", async () => {
     const name = formWindow.querySelector("#name").value.trim();
     const age = formWindow.querySelector("#age").value.trim();
     const email = formWindow.querySelector("#email").value.trim();
+
     if (name && age && email) {
       customerInfo = { name, age, email };
       sessionId = crypto.randomUUID ? crypto.randomUUID() : generateUUIDv4();
@@ -140,36 +185,19 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
       greet.classList.add("bubble", "bot");
       greet.textContent = `Welcome ${name}! Your session ID is ${sessionId}. Let's start chatting.`;
       chatMessages.appendChild(greet);
+
+      // 🔧 Silently initialize session (no UI bubble for errors)
+      await sendToBackend({
+        customer: customerInfo,
+        sessionId: sessionId,
+        message: "" // empty message to log session
+      });
     } else {
       alert("Please fill out all fields.");
     }
   });
 
-  async function sendMessageToWebhook(text) {
-    try {
-      const response = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customer: customerInfo,
-          sessionId: sessionId,
-          message: text
-        })
-      });
-      const data = await response.json();
-      const botMsg = document.createElement("div");
-      botMsg.classList.add("bubble", "bot");
-      botMsg.textContent = data.question || "No response";
-      chatMessages.appendChild(botMsg);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    } catch {
-      const errMsg = document.createElement("div");
-      errMsg.classList.add("bubble", "bot");
-      errMsg.textContent = "(error connecting to chatbot)";
-      chatMessages.appendChild(errMsg);
-    }
-  }
-
+  // --- Send button handler ---
   sendButton.addEventListener("click", () => {
     const text = messageInput.value.trim();
     if (text) {
@@ -200,4 +228,5 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
