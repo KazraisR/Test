@@ -159,7 +159,7 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
       const data = await response.json();
       const botMsg = document.createElement("div");
       botMsg.classList.add("bubble", "bot");
-      botMsg.textContent = data.reply || "No response";
+      botMsg.textContent = data.question || "No response";
       chatMessages.appendChild(botMsg);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     } catch {
@@ -200,3 +200,4 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
