@@ -151,6 +151,7 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
       message: text
     });
 
+    console.log("Server response from chatbot:", data);
     const botMsg = document.createElement("div");
     botMsg.classList.add("bubble", "bot");
 
@@ -228,6 +229,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
