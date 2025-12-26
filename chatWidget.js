@@ -1,3 +1,31 @@
+const i18n = {
+  EN: {
+    header_title: "Enter Your Info",
+    name_label: "Name",
+    age_label: "Age",
+    email_label: "Email",
+    language_label: "Language",
+    name_ph: "Your name",
+    age_ph: "Your age",
+    email_ph: "Your email",
+    start_btn: "Start Chat",
+    greet: "I'm the AI who will assist you with your visa enquiries today. May I assist you with any visa that you are interested in?""
+  },
+
+  VI: {
+    header_title: "Nhập Thông Tin",
+    name_label: "Tên",
+    age_label: "Tuổi",
+    email_label: "Email",
+    language_label: "Ngôn ngữ",
+    name_ph: "Tên của bạn",
+    age_ph: "Tuổi của bạn",
+    email_ph: "Email của bạn",
+    start_btn: "Bắt đầu chat",
+    greet: "Tôi là trợ lý AI sẽ hỗ trợ bạn về các thắc mắc visa hôm nay. Bạn muốn tìm hiểu loại visa nào?"
+  }
+};
+
 
 // chatWidget.js
 export function initChatWidget(webhookUrl, styleOptions = {}) {
@@ -24,17 +52,29 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
   const formWindow = document.createElement("div");
   formWindow.className = "form-window";
   formWindow.innerHTML = `
-    <div class="form-header">Enter Your Info</div>
-    <form class="form-content">
-      <label>Name</label>
-      <input type="text" id="name" placeholder="Your name" required>
-      <label>Age</label>
-      <input type="number" id="age" placeholder="Your age" required>
-      <label>Email</label>
-      <input type="email" id="email" placeholder="Your email" required>
-      <button type="button" id="start-chat">Start Chat</button>
-    </form>
-  `;
+  	<div class="form-header" id="form-header-title">Enter Your Info</div>
+  	<form class="form-content">
+    	<label id="label-name">Name</label>
+    	<input type="text" id="name" placeholder="Your name" required>
+
+    	<label id="label-age">Age</label>
+    	<input type="number" id="age" placeholder="Your age" required>
+
+    	<label id="label-email">Email</label>
+    	<input type="email" id="email" placeholder="Your email" required>
+
+    	<div class="lang-select-wrapper">
+      		<label id="label-language">Language</label>
+      		<select id="language">
+        		<option value="EN">EN</option>
+        		<option value="VI">VI</option>
+      		</select>
+    	</div>
+
+    	<button type="button" id="start-chat">Start Chat</button>
+  	</form>
+`;
+
   document.body.appendChild(formWindow);
 
   // --- Create chat window ---
@@ -57,7 +97,20 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
   // --- Styles ---
   const style = document.createElement("style");
   style.textContent = `
-    .chat-button {
+    .lang-select-wrapper {
+  		position: absolute;
+  		bottom: 10px;
+  		right: 10px;
+  		display: flex;
+  		flex-direction: column;
+  		gap: 4px;
+		}
+		.lang-select-wrapper select {
+  		padding: 6px;
+  		border: 1px solid #ccc;
+  		border-radius: 6px;
+		}
+		.chat-button {
       position: fixed; bottom: 20px; right: ${posRight}; left: ${posLeft};
       background: ${primaryColor}; color: white; border: none;
       border-radius: 50%; width: 60px; height: 60px;
@@ -112,9 +165,35 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
   const messageInput = chatWindow.querySelector("#message");
   const chatMessages = chatWindow.querySelector(".chat-messages");
   const closeButton = chatWindow.querySelector(".chat-close");
+	function applyLanguage(lang) {
+  	const t = i18n[lang];
+
+  	document.getElementById("form-header-title").textContent = t.header_title;
+
+  	document.getElementById("label-name").textContent = t.name_label;
+  	document.getElementById("name").placeholder = t.name_ph;
+
+  	document.getElementById("label-age").textContent = t.age_label;
+  	document.getElementById("age").placeholder = t.age_ph;
+
+  	document.getElementById("label-email").textContent = t.email_label;
+  	document.getElementById("email").placeholder = t.email_ph;
+
+  	document.getElementById("label-language").textContent = t.language_label;
+
+  	document.getElementById("start-chat").textContent = t.start_btn;
+}
+
+const languageSelect = formWindow.querySelector("#language");
+
+languageSelect.addEventListener("change", () => {
+  applyLanguage(languageSelect.value);
+});
 
   let customerInfo = {};
   let sessionId = null;
+
+	applyLanguage("EN");
 
   chatButton.addEventListener("click", () => {
     formWindow.style.display = formWindow.style.display === "flex" ? "none" : "flex";
@@ -231,9 +310,10 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
     const name = formWindow.querySelector("#name").value.trim();
     const age = formWindow.querySelector("#age").value.trim();
     const email = formWindow.querySelector("#email").value.trim();
+		const language = languageSelect.value;
 
     if (name && age && email) {
-      customerInfo = { name, age, email };
+      customerInfo = { name, age, email, language };
       sessionId = crypto.randomUUID ? crypto.randomUUID() : generateUUIDv4();
 
       formWindow.style.display = "none";
@@ -286,6 +366,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
