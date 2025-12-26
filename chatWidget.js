@@ -64,12 +64,12 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
     	<input type="email" id="email" placeholder="Your email" required>
 
     	<div class="lang-select-wrapper">
-      		<label id="label-language">Language</label>
-      		<select id="language">
-        		<option value="EN">EN</option>
-        		<option value="VI">VI</option>
-      		</select>
-    	</div>
+  			<span id="label-language">Language</span>
+  			<select id="language">
+    			<option value="EN">EN</option>
+    			<option value="VI">VI</option>
+  			</select>
+		</div>
 
     	<button type="button" id="start-chat">Start Chat</button>
   	</form>
@@ -97,20 +97,21 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
   // --- Styles ---
   const style = document.createElement("style");
   style.textContent = `
-    .lang-select-wrapper {
-  		position: absolute;
-  		bottom: 10px;
-  		right: 10px;
-  		display: flex;
-  		flex-direction: column;
-  		gap: 4px;
-		}
-		.lang-select-wrapper select {
-  		padding: 6px;
-  		border: 1px solid #ccc;
-  		border-radius: 6px;
-		}
-		.chat-button {
+	.lang-select-wrapper {
+  	  position: absolute;
+  	  bottom: 10px;
+  	  right: 10px;
+  	  display: flex;
+  	  flex-direction: row;
+  	  align-items: center;
+  	  gap: 6px;
+	}
+	.lang-select-wrapper select {
+  	  padding: 6px;
+  	  border: 1px solid #ccc;
+  	  border-radius: 6px;
+	}
+	.chat-button {
       position: fixed; bottom: 20px; right: ${posRight}; left: ${posLeft};
       background: ${primaryColor}; color: white; border: none;
       border-radius: 50%; width: 60px; height: 60px;
@@ -366,6 +367,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
