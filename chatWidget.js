@@ -9,6 +9,7 @@ const i18n = {
     age_ph: "Your age",
     email_ph: "Your email",
     start_btn: "Start Chat",
+	hi: "Hello",
     greet: "I'm the AI who will assist you with your visa enquiries today. May I assist you with any visa that you are interested in?"
   },
 
@@ -22,6 +23,7 @@ const i18n = {
     age_ph: "Tuổi của bạn",
     email_ph: "Email của bạn",
     start_btn: "Bắt đầu chat",
+	hi: "Xin chào",
     greet: "Tôi là trợ lý AI sẽ hỗ trợ bạn về các thắc mắc visa hôm nay. Bạn muốn tìm hiểu loại visa nào?"
   }
 };
@@ -367,6 +369,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
