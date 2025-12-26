@@ -286,6 +286,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+}
 
 
 
