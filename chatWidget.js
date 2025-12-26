@@ -176,7 +176,6 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
       buttonContainer.classList.add("chat-buttons");
 
       data.buttons.forEach(btn => {
-        // Validate button structure
         if (!btn || !btn.label || !btn.value) return;
 
         const button = document.createElement("button");
@@ -184,31 +183,47 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
         button.textContent = btn.label;
 
         button.addEventListener("click", () => {
-          // Show user bubble
+          const value = btn.value.trim().toLowerCase();
+
+      // --- END CHAT LOGIC ---
+          if (value.includes("end")) {
+            // Remove buttons
+            buttonContainer.remove();
+
+        // Close chat window
+            chatWindow.style.display = "none";
+
+        // Optionally show a final message
+            const endMsg = document.createElement("div");
+            endMsg.classList.add("bubble", "bot");
+            endMsg.textContent = "Chat ended.";
+            chatMessages.appendChild(endMsg);
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return; // ⛔ STOP — do not send to backend
+          }
+
+      // --- NORMAL BUTTON BEHAVIOR ---
           const userBubble = document.createElement("div");
           userBubble.classList.add("bubble", "customer");
           userBubble.textContent = btn.value;
           chatMessages.appendChild(userBubble);
           chatMessages.scrollTop = chatMessages.scrollHeight;
 
-          // Send value to backend
           sendMessageToWebhook(btn.value);
 
-          // Remove buttons after click
           buttonContainer.remove();
         });
 
         buttonContainer.appendChild(button);
       });
 
-      // Only append if at least one valid button was created
       if (buttonContainer.children.length > 0) {
         chatMessages.appendChild(buttonContainer);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
     }
 
-  }
 
   // --- Start Chat handler ---
   startChatButton.addEventListener("click", async () => {
@@ -270,6 +285,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
