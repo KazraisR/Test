@@ -224,7 +224,7 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
     }
-
+  }
 
   // --- Start Chat handler ---
   startChatButton.addEventListener("click", async () => {
@@ -287,6 +287,7 @@ function generateUUIDv4() {
     .join("");
 }
 }
+
 
 
 
