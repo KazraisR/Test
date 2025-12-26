@@ -1,3 +1,4 @@
+
 // chatWidget.js
 export function initChatWidget(webhookUrl, styleOptions = {}) {
   const WEBHOOK_URL = webhookUrl;
@@ -126,27 +127,22 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
 
   // --- Backend helper (no UI side effects) ---
   async function sendToBackend(payload) {
-  try {
-    const res = await fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const text = await res.text();
-
     try {
-      return JSON.parse(text);     
-    } catch {
-      return { raw: text };        
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      try {
+        return await res.json();
+      } catch {
+        return { raw: await res.text() };
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      return { error: true };
     }
-
-  } catch (err) {
-    console.error("Network error:", err);
-    return { error: true };
   }
-}
-
 
   // --- UI wrapper ---
   async function sendMessageToWebhook(text) {
@@ -290,7 +286,6 @@ function generateUUIDv4() {
     )
     .join("");
 }
-
 
 
 
