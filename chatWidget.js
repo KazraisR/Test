@@ -9,7 +9,7 @@ const i18n = {
     age_ph: "Your age",
     email_ph: "Your email",
     start_btn: "Start Chat",
-    greet: "I'm the AI who will assist you with your visa enquiries today. May I assist you with any visa that you are interested in?""
+    greet: "I'm the AI who will assist you with your visa enquiries today. May I assist you with any visa that you are interested in?"
   },
 
   VI: {
@@ -321,7 +321,7 @@ languageSelect.addEventListener("change", () => {
 
       const greet = document.createElement("div");
       greet.classList.add("bubble", "bot");
-      greet.textContent = `Welcome ${name}! How can I help you today?`;
+      greet.textContent = `${i18n[language].hi} ${name}! ${i18n[language].greet}`;
       chatMessages.appendChild(greet);
 
       // 🔧 Silently initialize session (no UI bubble for errors)
@@ -366,6 +366,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
