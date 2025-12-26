@@ -168,7 +168,7 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
   const messageInput = chatWindow.querySelector("#message");
   const chatMessages = chatWindow.querySelector(".chat-messages");
   const closeButton = chatWindow.querySelector(".chat-close");
-	function applyLanguage(lang) {
+  function applyLanguage(lang) {
   	const t = i18n[lang];
 
   	document.getElementById("form-header-title").textContent = t.header_title;
@@ -193,7 +193,7 @@ languageSelect.addEventListener("change", () => {
   applyLanguage(languageSelect.value);
 });
 
-  let customerInfo = {};
+  let userInfo = {};
   let sessionId = null;
 
 	applyLanguage("EN");
@@ -229,7 +229,7 @@ languageSelect.addEventListener("change", () => {
   // --- UI wrapper ---
   async function sendMessageToWebhook(text) {
     const data = await sendToBackend({
-      customer: customerInfo,
+      user: userInfo,
       sessionId: sessionId,
       message: text
     });
@@ -316,7 +316,7 @@ languageSelect.addEventListener("change", () => {
 	const lang = languageSelect.value;
 
     if (name && age && email) {
-      customerInfo = { name, age, email, lang };
+      userInfo = { name, age, email, lang };
       sessionId = crypto.randomUUID ? crypto.randomUUID() : generateUUIDv4();
 
       formWindow.style.display = "none";
@@ -329,7 +329,7 @@ languageSelect.addEventListener("change", () => {
 
       // 🔧 Silently initialize session (no UI bubble for errors)
       await sendToBackend({
-        customer: customerInfo,
+        user: userInfo,
         sessionId: sessionId,
         message: "" // empty message to log session
       });
@@ -369,6 +369,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
