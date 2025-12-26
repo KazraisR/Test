@@ -311,10 +311,10 @@ languageSelect.addEventListener("change", () => {
     const name = formWindow.querySelector("#name").value.trim();
     const age = formWindow.querySelector("#age").value.trim();
     const email = formWindow.querySelector("#email").value.trim();
-		const language = languageSelect.value;
+	const lang = languageSelect.value;
 
     if (name && age && email) {
-      customerInfo = { name, age, email, language };
+      customerInfo = { name, age, email, lang };
       sessionId = crypto.randomUUID ? crypto.randomUUID() : generateUUIDv4();
 
       formWindow.style.display = "none";
@@ -367,6 +367,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
