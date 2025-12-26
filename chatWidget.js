@@ -169,6 +169,45 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
 
     chatMessages.appendChild(botMsg);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+      // --- Optional buttons from backend ---
+    if (data && Array.isArray(data.buttons) && data.buttons.length > 0) {
+      const buttonContainer = document.createElement("div");
+      buttonContainer.classList.add("chat-buttons");
+
+      data.buttons.forEach(btn => {
+        // Validate button structure
+        if (!btn || !btn.label || !btn.value) return;
+
+        const button = document.createElement("button");
+        button.classList.add("chat-button-style");
+        button.textContent = btn.label;
+
+        button.addEventListener("click", () => {
+          // Show user bubble
+          const userBubble = document.createElement("div");
+          userBubble.classList.add("bubble", "customer");
+          userBubble.textContent = btn.value;
+          chatMessages.appendChild(userBubble);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+
+          // Send value to backend
+          sendMessageToWebhook(btn.value);
+
+          // Remove buttons after click
+          buttonContainer.remove();
+        });
+
+        buttonContainer.appendChild(button);
+      });
+
+      // Only append if at least one valid button was created
+      if (buttonContainer.children.length > 0) {
+        chatMessages.appendChild(buttonContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+
   }
 
   // --- Start Chat handler ---
@@ -231,6 +270,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
