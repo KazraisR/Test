@@ -322,7 +322,7 @@ languageSelect.addEventListener("change", () => {
 
       const greet = document.createElement("div");
       greet.classList.add("bubble", "bot");
-      greet.textContent = `${i18n[language].hi} ${name}! ${i18n[language].greet}`;
+      greet.textContent = `${i18n[lang].hi} ${name}! ${i18n[lang].greet}`;
       chatMessages.appendChild(greet);
 
       // 🔧 Silently initialize session (no UI bubble for errors)
@@ -367,6 +367,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
