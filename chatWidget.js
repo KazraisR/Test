@@ -225,7 +225,7 @@ export function initChatWidget(webhookUrl, styleOptions = {}) {
 
       const greet = document.createElement("div");
       greet.classList.add("bubble", "bot");
-      greet.textContent = `Welcome ${name}! Your session ID is ${sessionId}. Let's start chatting.`;
+      greet.textContent = `Welcome ${name}! How can I help you today?`;
       chatMessages.appendChild(greet);
 
       // 🔧 Silently initialize session (no UI bubble for errors)
@@ -270,6 +270,7 @@ function generateUUIDv4() {
     )
     .join("");
 }
+
 
 
 
